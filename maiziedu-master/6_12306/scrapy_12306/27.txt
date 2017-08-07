@@ -1,0 +1,49 @@
+mysql> desc agencys;
++----------+-------------+------+-----+---------+-------+
+| Field    | Type        | Null | Key | Default | Extra |
++----------+-------------+------+-----+---------+-------+
+| province | varchar(10) | NO   |     | NULL    |       |
+| city     | varchar(15) | NO   |     | NULL    |       |
+| county   | varchar(15) | NO   |     | NULL    |       |
+| address  | varchar(50) | NO   | PRI | NULL    |       |
+| name     | varchar(50) | NO   |     | NULL    |       |
+| windows  | int(11)     | YES  |     | NULL    |       |
+| start    | time        | YES  |     | NULL    |       |
+| end      | time        | YES  |     | NULL    |       |
++----------+-------------+------+-----+---------+-------+
+8 rows in set (0.01 sec)
+代售点 10000 + 条 http 请求 31 个
+mysql> select count(*) from agencys;
+mysql> select count(*) from agencys group by province;
+有31个
+
+站点(乘降所) 3000 + 条 http 请求 36 个
+mysql> select count(*) from stations group by bureau;
+
+
+
+
+mysql> desc train_briefs;
++----------+-------------+------+-----+---------+-------+
+| Field    | Type        | Null | Key | Default | Extra |
++----------+-------------+------+-----+---------+-------+
+| code     | varchar(10) | NO   | PRI | NULL    |       |
+| train_no | varchar(20) | NO   |     | NULL    |       |
+| start    | varchar(10) | NO   |     | NULL    |       |
+| end      | varchar(10) | NO   |     | NULL    |       |
++----------+-------------+------+-----+---------+-------+
+4 rows in set (0.00 sec)
+
+车次路线 7000 + 条 http 请求 1 个
+mysql> select count(*) from train_briefs;
+
+站点组合 7000 + 条 无 http 请求
+用27_fetch_all.py来找到
+
+
+票价 / 余票 48 w + 条 http 请求 7000 +
+通过站点组合获取数据量
+
+
+正晚点查询 48 w + 条 http 请求 48 w + 
+和票价查询一致

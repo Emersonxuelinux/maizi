@@ -1,0 +1,11 @@
+因为我主要用的是vim+pdb，也不打算学习pycharm，所以这里就不列pycharm的安装使用，主要讲讲我对pdb的理解。
+1.两种pdb方式
+a.命令行运行 python -m pdb test.py
+b.程序内设置：
+import pdb
+pdb.set_trace()
+2.设置断点: b 行号
+3.然后就是综合使用n,s,c,a,j来进行查看调试
+4.最后有两个地方可以调整：
+a.设置变量值：!a = 50
+b.打印变量值：p a

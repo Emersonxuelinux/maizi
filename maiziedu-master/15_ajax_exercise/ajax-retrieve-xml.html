@@ -1,0 +1,52 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Asynchronous JavaScript And XML</title>
+</head>
+<body>
+<script type="text/javascript">
+var xmlHttp=null;
+function readyStateChangeHandle()
+{
+    if(xmlHttp.readyState==4)
+    {
+        if(xmlHttp.status==200)
+        {   
+            /* 获取xml文件 */
+            var xmlDOM=xmlHttp.responseXML;
+            /* 再获取xml文件的文档元素 */
+            var xmlRoot=xmlDOM.documentElement;
+            try
+            {
+                /* 获取文档中的item标签内容 */
+                var xmlItem=xmlRoot.getElementsByTagName("item");
+                /* 获取第一个item的第一个子元素数据 */
+                alert(xmlItem[0].firstChild.data);
+            }
+            catch(e)
+            {
+                alert(e.message);
+            }
+        }
+    }    
+}
+function ajaxRequest()
+{
+    /* 建立对象 */
+    if(window.XMLHttpRequest)
+    {
+        xmlHttp=new XMLHttpRequest();
+    }
+    else if(window.ActiveXObject)
+    {
+        xmlHttp=new ActiveXObject("Microsoft.XMLHTTP");
+    }
+    xmlHttp.onreadystatechange=readyStateChangeHandle;
+    xmlHttp.open("GET","data.xml",true);
+    xmlHttp.send(null);
+}
+</script>
+<input type="button" onclick="ajaxRequest()" value="Take me to the world of AJAX" />
+</body>
+</html>

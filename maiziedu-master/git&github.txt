@@ -1,0 +1,798 @@
+1.git help --- git help -a
+
+/Users/apple:694$mkdir git-test
+/Users/apple:695$cd git-test/
+/Users/apple:696$git help
+usage: git [--version] [--help] [-C <path>] [-c name=value]
+           [--exec-path[=<path>]] [--html-path] [--man-path] [--info-path]
+           [-p | --paginate | --no-pager] [--no-replace-objects] [--bare]
+           [--git-dir=<path>] [--work-tree=<path>] [--namespace=<name>]
+           <command> [<args>]
+
+These are common Git commands used in various situations:
+
+start a working area (see also: git help tutorial)
+   clone      Clone a repository into a new directory
+   init       Create an empty Git repository or reinitialize an existing one
+
+work on the current change (see also: git help everyday)
+   add        Add file contents to the index
+   mv         Move or rename a file, a directory, or a symlink
+   reset      Reset current HEAD to the specified state
+   rm         Remove files from the working tree and from the index
+
+examine the history and state (see also: git help revisions)
+   bisect     Use binary search to find the commit that introduced a bug
+   grep       Print lines matching a pattern
+   log        Show commit logs
+   show       Show various types of objects
+   status     Show the working tree status
+
+grow, mark and tweak your common history
+   branch     List, create, or delete branches
+   checkout   Switch branches or restore working tree files
+   commit     Record changes to the repository
+   diff       Show changes between commits, commit and working tree, etc
+   merge      Join two or more development histories together
+   rebase     Forward-port local commits to the updated upstream head
+   tag        Create, list, delete or verify a tag object signed with GPG
+
+collaborate (see also: git help workflows)
+   fetch      Download objects and refs from another repository
+   pull       Fetch from and integrate with another repository or a local branch
+   push       Update remote refs along with associated objects
+
+'git help -a' and 'git help -g' list available subcommands and some
+concept guides. See 'git help <command>' or 'git help <concept>'
+to read about a specific subcommand or concept.
+
+
+2.初始化
+/Users/apple:699$git config --global user.name 'hugh MBP'
+/Users/apple:700$pwd
+/Users/apple/git-test
+/Users/apple:701$git config --global user.email 'jonhson_hugh@163.com'
+/Users/apple:702$git help config
+/Users/apple:703$git config --unset user.name 'hugh RMBP'
+/Users/apple:704$git config --list
+credential.helper=osxkeychain
+filter.lfs.clean=git-lfs clean %f
+filter.lfs.smudge=git-lfs smudge %f
+filter.lfs.required=true
+user.name=hugh MBP
+user.email=jonhson_hugh@163.com
+core.repositoryformatversion=0
+core.filemode=true
+core.bare=false
+core.logallrefupdates=true
+core.ignorecase=true
+core.precomposeunicode=true
+
+- 可以打开.gitconfig查看配置信息
+  1 [filter "lfs"]
+  2         clean = git-lfs clean %f
+  3         smudge = git-lfs smudge %f
+  4         required = true
+  5 [user]
+  6         name = hugh MBP
+  7         email = jonhson_hugh@163.com
+
+/Users/apple:712$cd git-test/
+/Users/apple:713$git init
+Initialized empty Git repository in /Users/apple/git-test/.git/
+/Users/apple:714$ls
+/Users/apple:715$la
+.   ..  .git
+/Users/apple:716$ll
+/Users/apple:717$cd .git
+/Users/apple:718$ls
+HEAD        branches    config      description hooks       info        objects     refs
+
+3.版本库-暂存区：git add
+版本库-分支: git commit
+
+On branch master
+
+Initial commit
+
+nothing to commit (create/copy files and use "git add" to track)
+/Users/apple:724$git status
+On branch master
+
+Initial commit
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+
+    index.html
+
+nothing added to commit but untracked files present (use "git add" to track)
+/Users/apple:725$git add index.html
+/Users/apple:726$git status
+On branch master
+
+Initial commit
+
+Changes to be committed:
+  (use "git rm --cached <file>..." to unstage)
+
+    new file:   index.html
+
+/Users/apple:727$git commit
+error: There was a problem with the editor 'vi'.
+Please supply the message using either -m or -F option.
+/Users/apple:728$git commit -am"add index.html"
+[master (root-commit) f5fee62] add index.html
+ 1 file changed, 1 insertion(+)
+ create mode 100644 index.html
+/Users/apple:729$git status
+On branch master
+nothing to commit, working directory clean
+
+4. git log
+/Users/apple:734$git log --oneline
+f5fee62 add index.html
+/Users/apple:735$git log --decorate
+commit f5fee62a242f0ea4d36dcc6d3dde40040ee9c072 (HEAD -> master)
+Author: hugh MBP <jonhson_hugh@163.com>
+Date:   Fri Jun 17 00:36:28 2016 +0800
+
+    add index.html
+/Users/apple:736$git log --all
+commit f5fee62a242f0ea4d36dcc6d3dde40040ee9c072
+Author: hugh MBP <jonhson_hugh@163.com>
+Date:   Fri Jun 17 00:36:28 2016 +0800
+
+    add index.html
+
+
+4. git rm ，git mv 修改暂存区记录（还未提交）
+  git rm -f 同时从本地和缓存区删除
+
+5. git revert/reset
+HEAD：一个游标，指向最后一次提交
+git revert HEAD 回撤当前版本（排第一）
+git revert HEAD^^回撤到上两个版本（排第三）
+git revert HEAD~100回撤到上100个版本
+
+- soft:只从分支中撤回，还在暂存区，等待提交
+git log --oneline
+f369cdd 添加my.js
+f5fee62 add index.html
+/Users/apple:759$git reset HEAD^ --soft
+/Users/apple:760$git status
+On branch master
+nothing to commit, working directory clean
+/Users/apple:761$git log --oneline
+f5fee62 add index.html
+
+- mixed:同时从暂存区和分支中撤回
+/Users/apple:773$git log --oneline
+5445aab 添加style.css
+a8d1c18 添加my.js
+f5fee62 add index.html
+/Users/apple:774$ls
+index.html  my.js   style.css
+/Users/apple:775$git reset HEAD^ --mixed
+/Users/apple:776$ls
+index.html  my.js   style.css
+/Users/apple:777$git log --oneline
+a8d1c18 添加my.js
+f5fee62 add index.html
+/Users/apple:778$git status
+On branch master
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+
+  style.css
+
+nothing added to commit but untracked files present (use "git add" to track)
+
+
+- hard:同时从工作区，暂存区，分支中撤回。这叫硬重置，慎用
+/Users/apple:782$git log --oneline
+d6458db 添加style.css
+a8d1c18 添加my.js
+f5fee62 add index.html
+/Users/apple:783$git reset HEAD^ --hard
+HEAD is now at a8d1c18 添加my.js
+/Users/apple:784$git log --oneline
+a8d1c18 添加my.js
+f5fee62 add index.html
+/Users/apple:785$git status
+On branch master
+nothing to commit, working directory clean
+/Users/apple:786$ls
+index.html  my.js
+
+- 通过版本号重置（软重置）用这个更好，更精确
+/Users/apple:788$git reset f5fee62
+/Users/apple:789$git log --oneline
+f5fee62 add index.html
+/Users/apple:790$git status
+On branch master
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+
+  my.js
+
+nothing added to commit but untracked files present (use "git add" to track)
+
+
+
+6.git branch
+/Users/apple:799$git branch
+* master
+/Users/apple:800$git branch dev
+/Users/apple:801$git branch
+  dev
+* master
+/Users/apple:802$git checkout dev
+Switched to branch 'dev'
+/Users/apple:803$git branch
+* dev
+  master
+/Users/apple:804$vim -C index.html
+/Users/apple:805$git status
+On branch dev
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git checkout -- <file>..." to discard changes in working directory)
+
+  modified:   index.html
+
+no changes added to commit (use "git add" and/or "git commit -a")
+/Users/apple:806$git diff
+diff --git a/index.html b/index.html
+index 30d74d2..76ef1b3 100644
+--- a/index.html
++++ b/index.html
+@@ -1 +1 @@
+-test
+\ No newline at end of file
++this is modified
+/Users/apple:807$git commit -am"modify index.html"
+[dev 1609a38] modify index.html
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+/Users/apple:808$git log --oneline
+1609a38 modify index.html
+3ea2dd3 add style.css
+fd26d4d add my.js
+f5fee62 add index.html
+/Users/apple:809$git branch
+* dev
+  master
+/Users/apple:810$git checkout master
+Switched to branch 'master'
+/Users/apple:811$git branch
+  dev
+* master
+/Users/apple:812$cat index.html
+test/Users/apple:813$vim -C index.html
+/Users/apple:814$git log --oneline
+3ea2dd3 add style.css
+fd26d4d add my.js
+f5fee62 add index.html
+/Users/apple:815$git checkout dev
+Switched to branch 'dev'
+/Users/apple:816$git log --oneline
+1609a38 modify index.html
+3ea2dd3 add style.css
+fd26d4d add my.js
+f5fee62 add index.html
+/Users/apple:817$cat index.html
+this is modified
+/Users/apple:818$
+
+7.git merge/diff
+
+/Users/apple:818$git branch
+* dev
+  master
+/Users/apple:819$git checkout master
+Switched to branch 'master'
+-----------------------------------合并无冲突
+/Users/apple:820$git merge dev
+Updating 3ea2dd3..1609a38
+Fast-forward
+ index.html | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+/Users/apple:821$git log --oneline
+1609a38 modify index.html
+3ea2dd3 add style.css
+fd26d4d add my.js
+f5fee62 add index.html
+/Users/apple:822$git checkout dev
+Switched to branch 'dev'
+/Users/apple:823$git diff
+/Users/apple:824$vim -C index.html
+/Users/apple:825$git diff
+diff --git a/index.html b/index.html
+index 76ef1b3..1d22c9e 100644
+--- a/index.html
++++ b/index.html
+@@ -1 +1,3 @@
+ this is modified
++and merge
++and diff
+/Users/apple:826$git diff master..dev
+/Users/apple:827$git branch
+* dev
+  master
+/Users/apple:828$git add index.html
+/Users/apple:829$git commit -m"modify and merge"
+[dev c479418] modify and merge
+ 1 file changed, 2 insertions(+)
+/Users/apple:830$git diff master..dev
+diff --git a/index.html b/index.html
+index 76ef1b3..1d22c9e 100644
+--- a/index.html
++++ b/index.html
+@@ -1 +1,3 @@
+ this is modified
++and merge
++and diff
+-------------------------------合并冲突
+/Users/apple:831$touch readme.md
+/Users/apple:832$git branch
+* dev
+  master
+/Users/apple:833$vim -C readme.md
+/Users/apple:834$git add readme.md
+/Users/apple:835$git commit -am"add readme.md"
+[dev e699e5b] add readme.md
+ 1 file changed, 1 insertion(+)
+ create mode 100644 readme.md
+/Users/apple:836$git log --oneline
+e699e5b add readme.md
+c479418 modify and merge
+1609a38 modify index.html
+3ea2dd3 add style.css
+fd26d4d add my.js
+f5fee62 add index.html
+/Users/apple:837$git checkout master
+Switched to branch 'master'
+/Users/apple:838$touch readme.md
+/Users/apple:839$vim -C readme.md
+/Users/apple:840$git add readme.md
+/Users/apple:841$git commit -am"add readme.md"
+[master de5eb48] add readme.md
+ 1 file changed, 1 insertion(+)
+ create mode 100644 readme.md
+/Users/apple:842$git log --oneline
+de5eb48 add readme.md
+1609a38 modify index.html
+3ea2dd3 add style.css
+fd26d4d add my.js
+f5fee62 add index.html
+/Users/apple:843$git merge dev
+Auto-merging readme.md
+CONFLICT (add/add): Merge conflict in readme.md
+Automatic merge failed; fix conflicts and then commit the result.
+/Users/apple:844$vim -C readme.md
+
+打开之后这样：
+  1 <<<<<<< HEAD
+  2 master
+  3 =======
+  4 add test
+  5 >>>>>>> dev
+
+
+修复之后：
+/Users/apple:846$git commit -am"fix readme.md"
+[master 3a0b978] fix readme.md
+/Users/apple:847$git diff master..dev
+/Users/apple:848$git log --oneline
+3a0b978 fix readme.md
+de5eb48 add readme.md
+e699e5b add readme.md
+c479418 modify and merge
+1609a38 modify index.html
+3ea2dd3 add style.css
+fd26d4d add my.js
+f5fee62 add index.html
+
+
+(推荐)带注释的禁用快进合并：ff:fast forward
+/Users/apple:851$git checkout dev
+Switched to branch 'dev'
+/Users/apple:852$vim -C index.html
+/Users/apple:853$git status
+On branch dev
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git checkout -- <file>..." to discard changes in working directory)
+
+  modified:   index.html
+
+no changes added to commit (use "git add" and/or "git commit -a")
+/Users/apple:854$git add index.html
+/Users/apple:855$git commit -am"add class container div"
+[dev b13165a] add class container div
+ 1 file changed, 1 insertion(+)
+/Users/apple:856$git checkout master
+Switched to branch 'master'
+/Users/apple:857$git merge dev --no-ff -m"merge dev --no-ff"
+Merge made by the 'recursive' strategy.
+ index.html | 1 +
+ 1 file changed, 1 insertion(+)
+
+ /Users/apple:858$git log --oneline
+86f2c00 merge dev --no-ff
+b13165a add class container div
+3a0b978 fix readme.md
+de5eb48 add readme.md
+e699e5b add readme.md
+c479418 modify and merge
+1609a38 modify index.html
+3ea2dd3 add style.css
+fd26d4d add my.js
+f5fee62 add index.html
+
+删除分支：
+/Users/apple:859$git branch -d dev
+Deleted branch dev (was b13165a).
+/Users/apple:860$git branch
+* master
+
+重命名分支：
+/Users/apple:862$git branch dev2
+/Users/apple:863$git branch
+  dev2
+* master
+/Users/apple:864$git branch -m dev2 dev
+/Users/apple:865$git branch
+  dev
+* master
+
+
+
+8.bug分支和feature分支
+注意：暂存区是所有分支共有的，如果你没有提交直接切换，那么切换后的分支缓存区是不变的，你这时提交会把缓存区中的内容提交到当前分支
+
+创建并切换bug分支：
+/Users/apple:873$git checkout -b bug_001
+Switched to a new branch 'bug_001'
+/Users/apple:874$git branch
+* bug_001
+  dev
+  master
+/Users/apple:875$git status
+On branch bug_001
+nothing to commit, working directory clean
+
+-git stash可以封存当前分支对缓存区的改变，切换分支后混存区回复到修改前的状态：
+/Users/apple:878$git branch
+  bug_001
+* dev
+  master
+/Users/apple:879$git stash
+No local changes to save
+/Users/apple:880$git stash
+Saved working directory and index state WIP on dev: 86f2c00 merge dev --no-ff
+HEAD is now at 86f2c00 merge dev --no-ff
+/Users/apple:881$git checkout bug_001
+Switched to branch 'bug_001'
+/Users/apple:882$git status
+On branch bug_001
+nothing to commit, working directory clean
+
+- 封存后切换一个临时分支bug_001，修改好之后就可以合并到master，然后再回头到dev里面继续之前的工作：
+/Users/apple:884$git branch
+* bug_001
+  dev
+  master
+/Users/apple:885$git status
+On branch bug_001
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git checkout -- <file>..." to discard changes in working directory)
+
+  modified:   readme.md
+
+no changes added to commit (use "git add" and/or "git commit -a")
+/Users/apple:886$git add readme.md
+/Users/apple:887$git commit -m"fix bug_001"
+[bug_001 0a2e2f0] fix bug_001
+ 1 file changed, 1 insertion(+)
+/Users/apple:888$git checkout master
+Switched to branch 'master'
+/Users/apple:889$git merge bug_001 --no-ff -m"merge bug_001"
+Merge made by the 'recursive' strategy.
+ readme.md | 1 +
+ 1 file changed, 1 insertion(+)
+/Users/apple:890$git log --oneline
+8b8fc9e merge bug_001
+0a2e2f0 fix bug_001
+86f2c00 merge dev --no-ff
+b13165a add class container div
+3a0b978 fix readme.md
+de5eb48 add readme.md
+e699e5b add readme.md
+c479418 modify and merge
+1609a38 modify index.html
+3ea2dd3 add style.css
+fd26d4d add my.js
+f5fee62 add index.html
+
+- 回到dev继续开发，切换之后要把之前封存的缓存区内容释放出来：
+/Users/apple:891$git checkout dev
+Switched to branch 'dev'
+/Users/apple:892$git stash pop
+On branch dev
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git checkout -- <file>..." to discard changes in working directory)
+
+  modified:   index.html
+
+no changes added to commit (use "git add" and/or "git commit -a")
+Dropped refs/stash@{0} (7c2f9d35501f9437040cf149d21a672f491e5bf8)
+
+- 封存列表：git stash pop就是弹出最上面的那条stash记录
+/Users/apple:893$git stash list
+/Users/apple:894$git stash
+Saved working directory and index state WIP on dev: 86f2c00 merge dev --no-ff
+HEAD is now at 86f2c00 merge dev --no-ff
+/Users/apple:895$git stash list
+stash@{0}: WIP on dev: 86f2c00 merge dev --no-ff
+/Users/apple:896$git stash
+No local changes to save
+/Users/apple:897$git stash apply stash@{0}
+On branch dev
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git checkout -- <file>..." to discard changes in working directory)
+
+  modified:   index.html
+
+no changes added to commit (use "git add" and/or "git commit -a")
+
+
+- feature分支：开发新功能时用,类似于beta
+/Users/apple:899$git checkout -b feature_001
+M index.html
+Switched to a new branch 'feature_001'
+/Users/apple:900$git branch -d feature_001
+error: Cannot delete the branch 'feature_001' which you are currently on.
+/Users/apple:901$git branch master
+fatal: A branch named 'master' already exists.
+/Users/apple:902$git checkout master
+M index.html
+Switched to branch 'master'
+/Users/apple:903$git branch -d feature_001
+Deleted branch feature_001 (was 86f2c00).
+
+
+
+
+
+
+
+
+9. 托管到github
+/Users/apple:904$git remote add origin git@github.com:hughohoho/git-test.git
+/Users/apple:905$git push -u origin master
+Counting objects: 29, done.
+Delta compression using up to 8 threads.
+Compressing objects: 100% (21/21), done.
+Writing objects: 100% (29/29), 2.45 KiB | 0 bytes/s, done.
+Total 29 (delta 8), reused 0 (delta 0)
+To git@github.com:hughohoho/git-test.git
+ * [new branch]      master -> master
+Branch master set up to track remote branch master from origin.
+
+
+10.git remote/clone
+
+/Users/apple:907$git clone git@github.com:hughohoho/git-test.git
+fatal: destination path 'git-test' already exists and is not an empty directory.
+/Users/apple:908$cd git-test
+/Users/apple:909$mkdir clone-test
+/Users/apple:910$cd clone-test/
+/Users/apple:911$git clone git@github.com:hughohoho/git-test.git
+Cloning into 'git-test'...
+remote: Counting objects: 29, done.
+remote: Compressing objects: 100% (13/13), done.
+remote: Total 29 (delta 8), reused 29 (delta 8), pack-reused 0
+Receiving objects: 100% (29/29), done.
+Resolving deltas: 100% (8/8), done.
+Checking connectivity... done.
+
+
+- 区别远程分支和本地分支
+/Users/apple:912$git branch -r
+  origin/master
+/Users/apple:913$git branch
+  bug_001
+  dev
+* master
+
+-推送到远程的dev分支
+/Users/apple:914$git push -u origin dev
+Total 0 (delta 0), reused 0 (delta 0)
+To git@github.com:hughohoho/git-test.git
+ * [new branch]      dev -> dev
+Branch dev set up to track remote branch dev from origin.
+
+- 推送之后就关联好了
+/Users/apple:915$git branch -r
+  origin/dev
+  origin/master
+
+- 每次默认只会克隆master分支
+/Users/apple:925$rm -rf clone-test/
+/Users/apple:926$git clone git@github.com:hughohoho/git-test.git
+Cloning into 'git-test'...
+remote: Counting objects: 29, done.
+remote: Compressing objects: 100% (13/13), done.
+remote: Total 29 (delta 8), reused 29 (delta 8), pack-reused 0
+Receiving objects: 100% (29/29), done.
+Resolving deltas: 100% (8/8), done.
+Checking connectivity... done.
+
+/Users/apple:930$cd git-test/
+/Users/apple:931$git branch
+* master
+
+/Users/apple:932$git branch -a
+* master
+  remotes/origin/HEAD -> origin/master
+  remotes/origin/dev
+  remotes/origin/master
+
+- 如果本地开发，我们可以本地创建dev分支并关联到远程的dev分支，这时才会把那个分支clone下来并关联好
+/Users/apple:933$ls
+index.html  my.js   readme.md style.css
+/Users/apple:934$cat readme.md  ---------------------------------之前是远程master分支的内容
+add test
+add modify
+/Users/apple:935$git checkout -b dev origin/dev
+Branch dev set up to track remote branch dev from origin.
+Switched to a new branch 'dev'
+/Users/apple:936$git branch
+* dev
+  master
+/Users/apple:937$git branch -a
+* dev
+  master
+  remotes/origin/HEAD -> origin/master
+  remotes/origin/dev
+  remotes/origin/master
+/Users/apple:938$cat readme.md  ------------------------------------之后是远程dev分支的内容
+add test
+
+
+- 查看关联版本
+/Users/apple:941$git remote -v
+origin  git@github.com:hughohoho/git-test.git (fetch)
+origin  git@github.com:hughohoho/git-test.git (push)
+
+- 移除关联,移除之后就不能查看关联版本
+/Users/apple:943$git remote remove origin
+/Users/apple:944$git remote -v
+/Users/apple:945$git remote add origin git@github.com:hughohoho/git-test.git
+/Users/apple:946$git remote -v
+origin  git@github.com:hughohoho/git-test.git (fetch)
+origin  git@github.com:hughohoho/git-test.git (push)
+
+11.git pull/fetch（很重要）
+先pull才能push
+
+fetch只会更新，不合并。
+pull是更新+合并，尽量少用
+
+12. fork 和 pull request （github）
+github上直接保存到你账户下，类似于百度云的转存到我的网盘
+pull reqeusts 把你修改的内容推送给原作者
+
+
+
+
+13.别名：可以把git指令中除了git之外的所有内容缩写成一个词
+/Users/apple:950$git config --global alias.ci commit
+/Users/apple:951$git status
+On branch dev
+nothing to commit, working directory clean
+/Users/apple:952$git branch
+* dev
+  master
+/Users/apple:953$git diff
+/Users/apple:954$git status
+On branch dev
+nothing to commit, working directory clean
+/Users/apple:955$pwd
+/Users/apple/git-test/git-test
+/Users/apple:956$cd ..
+/Users/apple:957$ls
+git-test  index.html  my.js   readme.md style.css
+/Users/apple:958$git diff
+diff --git a/index.html b/index.html
+index c2612aa..421aaf8 100644
+--- a/index.html
++++ b/index.html
+@@ -2,3 +2,4 @@ this is modified
+ and merge
+ and diff
+ <div class="container"></div>
++style.css
+diff --git a/readme.md b/readme.md
+index 2b7ed0a..58d0830 100644
+--- a/readme.md
++++ b/readme.md
+@@ -1,2 +1,3 @@
+ add test
+ add modify
++test alias
+/Users/apple:959$git ci -am"modify readme.md"
+[master 7da612c] modify readme.md
+ 2 files changed, 2 insertions
+
+
+
+ /Users/apple:961$git config --global alias.lg 'log --oneline'
+/Users/apple:962$git lg
+7da612c modify readme.md
+8b8fc9e merge bug_001
+0a2e2f0 fix bug_001
+86f2c00 merge dev --no-ff
+b13165a add class container div
+3a0b978 fix readme.md
+de5eb48 add readme.md
+e699e5b add readme.md
+c479418 modify and merge
+1609a38 modify index.html
+3ea2dd3 add style.css
+fd26d4d add my.js
+f5fee62 add index.html
+
+再来一条长的别名：
+
+/Users/apple:963$git log --color --graph --pretty=format:"%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%C(bold blue)<%an>%Creset' --abbrev-commit"
+* 7da612c - (HEAD -> master) modify readme.md (7 minutes ago)<hugh MBP>' --abbrev-commit
+*   8b8fc9e - (origin/master) merge bug_001 (5 hours ago)<hugh MBP>' --abbrev-commit
+|\
+| * 0a2e2f0 - (bug_001) fix bug_001 (5 hours ago)<hugh MBP>' --abbrev-commit
+|/
+*   86f2c00 - (origin/dev, dev) merge dev --no-ff (6 hours ago)<hugh MBP>' --abbrev-commit
+|\
+| * b13165a - add class container div (6 hours ago)<hugh MBP>' --abbrev-commit
+* |   3a0b978 - fix readme.md (6 hours ago)<hugh MBP>' --abbrev-commit
+|\ \
+| |/
+| * e699e5b - add readme.md (6 hours ago)<hugh MBP>' --abbrev-commit
+| * c479418 - modify and merge (6 hours ago)<hugh MBP>' --abbrev-commit
+* | de5eb48 - add readme.md (6 hours ago)<hugh MBP>' --abbrev-commit
+|/
+* 1609a38 - modify index.html (8 hours ago)<hugh MBP>' --abbrev-commit
+* 3ea2dd3 - add style.css (8 hours ago)<hugh MBP>' --abbrev-commit
+* fd26d4d - add my.js (8 hours ago)<hugh MBP>' --abbrev-commit
+* f5fee62 - add index.html (20 hours ago)<hugh MBP>' --abbrev-commit
+/Users/apple:964$git config --global alias.lg "log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%C(bold blue)<%an>%Creset' --abbrev-commit"
+/Users/apple:965$git lg
+* 7da612c - (HEAD -> master) modify readme.md (9 minutes ago)<hugh MBP>
+*   8b8fc9e - (origin/master) merge bug_001 (5 hours ago)<hugh MBP>
+|\
+| * 0a2e2f0 - (bug_001) fix bug_001 (6 hours ago)<hugh MBP>
+|/
+*   86f2c00 - (origin/dev, dev) merge dev --no-ff (6 hours ago)<hugh MBP>
+|\
+| * b13165a - add class container div (6 hours ago)<hugh MBP>
+* |   3a0b978 - fix readme.md (6 hours ago)<hugh MBP>
+|\ \
+| |/
+| * e699e5b - add readme.md (6 hours ago)<hugh MBP>
+| * c479418 - modify and merge (6 hours ago)<hugh MBP>
+* | de5eb48 - add readme.md (6 hours ago)<hugh MBP>
+|/
+* 1609a38 - modify index.html (8 hours ago)<hugh MBP>
+* 3ea2dd3 - add style.css (8 hours ago)<hugh MBP>
+* fd26d4d - add my.js (8 hours ago)<hugh MBP>
+* f5fee62 - add index.html (20 hours ago)<hugh MBP>
+
+
+12. ssh免密登录
+https://www.douban.com/note/308449369/
+[github]利用生成ssh key验证简化github每次push时填写账号密码认证
+

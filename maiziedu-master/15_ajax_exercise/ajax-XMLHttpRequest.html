@@ -1,0 +1,28 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Ajax初步入门教学视频-麦子学院</title>
+</head>
+<body>
+<script type="text/javascript">
+function doAjax(the_request)
+{
+    var request = null;
+    if (window.XMLHttpRequest) {
+        request = new XMLHttpRquest() ;   
+    
+    } else if (window.ActiveXObject) {
+        request = new ActiveXObject('Microsoft.XMLHTTP');    
+    } else {
+        alert("您的浏览器不支持ajax");
+        return false;
+    }
+   return true; 
+}
+</script>
+<input type="button" onclick="doAjax('ajax-02.txt')" />
+<br/><br/>
+<div id="vv"></div>
+</body>
+</html>

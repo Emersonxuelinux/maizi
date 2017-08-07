@@ -1,0 +1,93 @@
+<html>
+<head>
+<title>Ajax初步入门视频课程</title>
+</head>
+<body>
+<div  id="msg" name="msg" style="width:300px;height:100px;border:1px solid green;">
+</div>
+<br/>
+<input type="button" value="test userid" onclick="clickEvent();" />
+<script type="text/javascript">
+
+function Ajax(type, url, data, success, failed){
+    // 创建ajax对象
+    var xhr = null;
+    if(window.XMLHttpRequest){
+        xhr = new XMLHttpRequest();
+    } else {
+        xhr = new ActiveXObject('Microsoft.XMLHTTP')
+    }
+ 
+    var type = type.toUpperCase();
+    // 用于清除缓存
+    var random = Math.random();
+ 
+    if(typeof data == 'object'){
+        var str = '';
+        for(var key in data){
+            str += key+'='+data[key]+'&';
+        }
+        //method=get&url=
+        data = str.replace(/&$/, '');
+    }
+ 
+    if(type == 'GET'){
+        if(data){
+            xhr.open('GET', url + '?' + data, true);
+        } else {
+            xhr.open('GET', url + '?t=' + random, true);
+        }
+        xhr.send();
+ 
+    } else if(type == 'POST'){
+        xhr.open('POST', url, true);
+        // 如果需要像 html 表单那样 POST 数据，请使用 setRequestHeader() 来添加 http 头。
+        xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xhr.send(data);
+    }
+ 
+    // 处理返回数据
+    xhr.onreadystatechange = function(){
+        if(xhr.readyState == 4){
+            if(xhr.status == 200){
+                success(xhr.responseText);
+                //success(xhr.responseXML);
+            } else {
+                if(failed){
+                    failed(xhr.status);
+                }
+            }
+        }
+    }
+}
+
+function clickEvent() {
+    var sendData = {name:'asher',sex:'male'};
+    Ajax('get', 'ajax-08-data.js', sendData, function(data){
+            eval(data)//获取js代码之后用eval函数去执行js即可
+            /*
+            //介绍获取text类型和html类型，前者就是字符串文本，后者就会变成html代码加入进去
+            //其实json和xml数据都可以用txt格式文件保存，区别只是json和xml的格式可以被识别
+            然后json用eval函数解析，xml则需要通过标签名来获取
+            //这里介绍获取json格式之后如何处理
+            var user = eval('('+date+')');
+            //这里介绍获取xml类型之后如何处理
+            var xmlDOM= data;
+            var xmlRoot=xmlDOM.documentElement;\\先获取xml的根元素
+            try
+            {
+                var xmlItem=xmlRoot.getElementsByTagName("name");
+         document.getElementById('msg').innerHTML = xmlItem[0].firstChild.data;
+            }
+            catch(e)
+            {
+                alert(e.message);
+            }
+            */
+    }, function(error){
+        document.getElementById('msg').innerHTML = data
+    });
+}
+</script>
+</body>
+</html>

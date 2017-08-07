@@ -1,0 +1,61 @@
+<html>
+<head>
+<title>Ajax初步入门视频课程</title>
+</head>
+
+<body>
+
+<script type="text/javascript">
+
+var xmlHttp = null;
+/* 函数名就知道这个方法专门监控readyState,判断状态然后展示相应内容 */
+function readyStateChangeHandle()
+{
+    if (xmlHttp.readyState ==4 ) {
+        if (xmlHttp.status == 200 ) {
+            document.getElementById('vv').innerHTML = xmlHttp.responseText;        
+        }     
+    } 
+}
+/*  */
+function ajaxFunction(the_request_url)
+{
+    /* 创建XMLHttpRequest对象 */
+    try {
+        xmlHttp = new XMLHttpRequest() ;   
+    }    
+    catch(e) {
+        try {
+            xmlHttp = new ActiveXObject("Msxml2.XMLHTTP");
+        }
+        catch(e) {
+            try {
+                xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
+            }
+            catch(e) {
+                alert("您的浏览器不支持ajax") ;
+                return false;
+            }    
+        }    
+    }
+
+    if (xmlHttp) {
+        xmlHttp.open('GET', the_request_url, true);   
+        /* 这里调用了上一个专门监控状态的方法 */  
+        xmlHttp.onreadystatechange = readyStateChangeHandle;
+        /* 最后发送请求 */
+        xmlHttp.send(null);
+    } else {
+        alert('error');     
+    }
+}
+
+
+</script>
+<input type="button" id="test" value="test" onclick="javascript:ajaxFunction('ajax-04.txt')" />
+<br/><br/>
+<div style="border:1px solid black;width:300px;height:250px;" id="vv">test ajax</div>
+
+</body>
+
+</html>

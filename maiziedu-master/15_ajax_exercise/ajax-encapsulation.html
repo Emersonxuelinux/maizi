@@ -1,0 +1,185 @@
+<html>
+<head>
+<title>Ajax初步入门视频课程</title>
+</head>
+<body>
+<!-- 这里就是要传送的表单信息 -->
+id:<input type="text" id="id" name="id"/>
+<br/>
+user_id:<input type="text" id="userid" name="userid"/>
+<br/>
+user_name:<input type="text" id="username" name="name"/>
+<br/>
+user_age:<input type="text" id="age" name="age"/>
+<br/>
+<!-- 用来展示错误信息 -->
+msg:<input type="text" id="msg" name="msg"/>
+<br/>
+<!-- 在按钮处添加点击事件 -->
+<input type="button" value="test userid" onclick="findUser();" />
+<script type="text/javascript">
+//主要定义一个对象来进行处理，下面定义的函数中凡是this都代码对象AjaxUtil
+var AjaxUtil = {
+     
+    // 默认基础选项
+    options : {
+        method : "get", // 默认提交的方法,get post
+        url : "", // 请求的路径 required
+        params : {}, // 请求的参数
+        type : 'text', // 返回的内容的类型,text,xml,json
+        callback : function() {
+        }// 回调函数 required
+    },
+     
+    // 创建XMLHttpRequest对象
+    createRequest : function() {
+        var xmlhttp;
+        try {
+            xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");// IE6以上版本
+        } catch (e) {
+            try {
+                xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");// IE6以下版本
+            } catch (e) {
+                try {
+                    xmlhttp = new XMLHttpRequest();
+                    if (xmlhttp.overrideMimeType) {
+                        xmlhttp.overrideMimeType("text/xml");
+                    }
+                } catch (e) {
+                    alert("您的浏览器不支持Ajax");
+                }
+            }
+        }
+        return xmlhttp;
+    },
+    // 设置基础选项，覆盖默认选项
+    setOptions : function(newOptions) {
+        for ( var pro in newOptions) {
+            this.options[pro] = newOptions[pro];//覆盖之前的默认键值
+        }
+    },
+    // 格式化请求参数
+    formateParameters : function() {
+        var paramsArray = [];
+        var params = this.options.params;//获取默认的键值参数
+        for ( var pro in params) {//进行遍历循环
+            var paramValue = params[pro]; 
+            /*if(this.options.method.toUpperCase() === "GET")
+            {
+                paramValue = encodeURIComponent(params[pro]);
+            }*/
+            paramsArray.push(pro + "=" + paramValue);//组成key=value这样的键值对
+        }
+        return paramsArray.join("&");//最后连接成一个字符串返回
+        // 举例：method=get&url=&callback=&type=text
+    },
+     
+    // 状态改变的处理
+    readystatechange : function(xmlhttp) {
+        // 获取返回值
+        var returnValue;
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+            switch (this.options.type) {//对不同格式数据分别处理
+            case "xml":
+                returnValue = xmlhttp.responseXML;
+                break;
+            case "json":
+                var jsonText = xmlhttp.responseText;
+                if(jsonText){
+                    returnValue = eval("(" + jsonText + ")");//通过eval函数解析处理后的json数据
+                }
+                break;
+            default:
+                returnValue = xmlhttp.responseText;
+                break;
+            }
+            if (returnValue) {
+                //传入解析处理之后的数据调用默认选项里面的callback函数名
+                this.options.callback.call(this, returnValue);
+            } else {
+                this.options.callback.call(this);
+            }
+        }
+    },
+     
+    // 发送Ajax请求
+    // 里面的参数格式：{'method':'get'}
+    request : function(options) {
+        var ajaxObj = this;
+     
+        // 设置参数，回调函数
+        ajaxObj.setOptions.call(ajaxObj, options);
+     
+        // 创建XMLHttpRequest对象
+        var xmlhttp = ajaxObj.createRequest.call(ajaxObj);
+     
+        // 设置回调函数
+        xmlhttp.onreadystatechange = function() {
+            ajaxObj.readystatechange.call(ajaxObj, xmlhttp);
+        };
+     
+        // 格式化参数
+        var formateParams = ajaxObj.formateParameters.call(ajaxObj);
+     
+        // 请求的方式为GET就直接拼接
+        var method = ajaxObj.options.method;
+        var url = ajaxObj.options.url;
+     
+        if ("GET" === method.toUpperCase()) {
+            url += "?" + formateParams;
+        }
+     
+        // 建立连接
+        xmlhttp.open(method, url, true);
+     
+        if ("GET" === method.toUpperCase()) {
+            xmlhttp.send(null);
+        } else if ("POST" === method.toUpperCase()) {
+            // 如果是POST提交，设置请求头信息
+            xmlhttp.setRequestHeader("Content-Type",
+                    "application/x-www-form-urlencoded");
+            xmlhttp.send(formateParams);
+        }
+    }
+};
+
+  
+    function $(id) {
+        return document.getElementById(id);
+    }
+    //处理json格式的函数
+    function process(json){
+            //如果有传值，就输出
+            //alert(json.id);//可以用来确定是否执行到这里
+            //debugger;//直接用来调试,浏览器进行调试
+            if(json){
+                $("id").value = json.id;
+                $("username").value = json.username;
+                $("age").value  = json.age;
+            }
+            //否则为空
+            else{
+                $("msg").value = "用户不存在";
+                $("id").value = "";
+                $("username").value = "";
+                $("age").value = "";
+            }
+    }
+ //  
+function findUser() {
+        var userid = $("userid").value;//这个$就是调用上面定义的那个函数
+        if (userid) {
+            AjaxUtil.request({
+                url:"ajax-07.txt",
+                params:{id:userid},
+                type:'json',
+                callback:process
+            });
+        }
+    }
+  
+
+
+</script>
+</body>
+</html>

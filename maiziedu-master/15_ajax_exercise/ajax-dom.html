@@ -1,0 +1,33 @@
+<html>
+<head>
+<title>Ajax初步入门视频课程</title>
+</head>
+<body>
+<div id="div1">
+    <p id="p1">第一段</p>
+    <p id="p2">第二段</p> 
+</div>
+<script type="text/javascript">
+
+/* 首先创建html元素 */
+var param = document.createElement('p');
+var node  = document.createTextNode("这是新文本");
+param.appendChild(node);
+/* 找到一个html元素 */
+var ele = document.getElementById("div1");
+/* 向其中追加元素 */
+ele.appendChild(param);
+
+
+
+
+</script>
+<script>
+/* 分别找到父亲元素和子元素，通过父元素来删除子元素 */
+var ele = document.getElementById("div1");
+var child = document.getElementById("p1");
+ele.removeChild(child);
+
+</script>
+</body>
+</html>

@@ -1,0 +1,691 @@
+/Users/apple:503$mysql -u root -p
+Enter password:
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 7
+Server version: 5.7.12 MySQL Community Server (GPL)
+
+Copyright (c) 2000, 2016, Oracle and/or its affiliates. All rights reserved.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> CREATE DATABASE IF NOT EXISTS `Study` DEFAULT CHARACTER SET 'UTF8';
+Query OK, 1 row affected (0.00 sec)
+
+mysql> USE `Study`;
+Database changed
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| Study              |
+| mysql              |
+| performance_schema |
+| sys                |
++--------------------+
+5 rows in set (0.01 sec)
+
+mysql> CREATE TABLE IF NOT EXISTS `students`(
+    -> sno SMALLINT,
+    -> sname VARCHAR(20),
+    -> sex ENUM('男','女','保密'),
+    -> sbirthday YEAR,
+    -> class TINYINT(1) COMMENT '一共有6个班'
+    -> )ENGINE=INNODB CHARSET=UTF8;
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> ALTER TABLE students ADD PRIMARY KEY(sno);
+Query OK, 0 rows affected (0.01 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> desc students;
++-----------+----------------------------+------+-----+---------+-------+
+| Field     | Type                       | Null | Key | Default | Extra |
++-----------+----------------------------+------+-----+---------+-------+
+| sno       | smallint(6)                | NO   | PRI | NULL    |       |
+| sname     | varchar(20)                | YES  |     | NULL    |       |
+| sex       | enum('男','女','保密')     | YES  |     | NULL    |       |
+| sbirthday | year(4)                    | YES  |     | NULL    |       |
+| class     | tinyint(1)                 | YES  |     | NULL    |       |
++-----------+----------------------------+------+-----+---------+-------+
+5 rows in set (0.00 sec)
+
+mysql> CREATE TABLE IF NOT EXISTS `courses`(
+    -> cno SMALLINT PRIMARY KEY,
+    -> cname VARCHAR(20),
+    -> tno TINYINT(1) COMMENT '一共有8个老师'
+    -> )ENGINE=INNODB CHARSET=UTF8;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> desc courses
+    -> ;
++-------+-------------+------+-----+---------+-------+
+| Field | Type        | Null | Key | Default | Extra |
++-------+-------------+------+-----+---------+-------+
+| cno   | smallint(6) | NO   | PRI | NULL    |       |
+| cname | varchar(20) | YES  |     | NULL    |       |
+| tno   | tinyint(1)  | YES  |     | NULL    |       |
++-------+-------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> CREATE TABLE IF NOT EXISTS `score`(
+    -> sno SMALLINT,
+    -> cno VARCHAR(20),
+    -> degree TINYINT(1) COMMENT '满分100'
+    -> )ENGINE=INNODB CHARSET=UTF8;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> desc score;
++--------+-------------+------+-----+---------+-------+
+| Field  | Type        | Null | Key | Default | Extra |
++--------+-------------+------+-----+---------+-------+
+| sno    | smallint(6) | YES  |     | NULL    |       |
+| cno    | varchar(20) | YES  |     | NULL    |       |
+| degree | tinyint(1)  | YES  |     | NULL    |       |
++--------+-------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> CREATE TABLE IF NOT EXISTS `teachers`(
+    -> tno SMALLINT  PRIMARY KEY,
+    -> tname VARCHAR(20),
+    -> tsex ENUM('男','女'),
+    -> tbirthday YEAR,
+    -> title VARCHAR(20),
+    -> depart TINYINT(1)
+    -> )ENGINE=INNODB CHARSET=UTF8;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> desc teachers;
++-----------+-------------------+------+-----+---------+-------+
+| Field     | Type              | Null | Key | Default | Extra |
++-----------+-------------------+------+-----+---------+-------+
+| tno       | smallint(6)       | NO   | PRI | NULL    |       |
+| tname     | varchar(20)       | YES  |     | NULL    |       |
+| tsex      | enum('男','女')   | YES  |     | NULL    |       |
+| tbirthday | year(4)           | YES  |     | NULL    |       |
+| title     | varchar(20)       | YES  |     | NULL    |       |
+| depart    | tinyint(1)        | YES  |     | NULL    |       |
++-----------+-------------------+------+-----+---------+-------+
+6 rows in set (0.00 sec)
+
+mysql> show tables;
++-----------------+
+| Tables_in_study |
++-----------------+
+| courses         |
+| score           |
+| students        |
+| teachers        |
++-----------------+
+4 rows in set (0.00 sec)
+
+
+mysql> INSERT students VALUES
+    -> (6,'李明','男','2005',1),
+    -> (7,'张一','男','2004',2),
+    -> (9,'刘欢','男','2006',2),
+    -> (11,'王丽','女','2003',3),
+    -> (13,'徐起','男','2007',3),
+    -> (45,'严嫣','女','2006',2),
+    -> (78,'赵丽颖','女','2005',4),
+    -> (90,'何馨','女','2006',5),
+    -> (23,'王齐','男','2004',5),
+    -> (19,'徐明','男','2006',6),
+    -> (80,'陈松','男','2005',6),
+    -> (17,'杨桦','女','2005',4);
+Query OK, 12 rows affected (0.00 sec)
+Records: 12  Duplicates: 0  Warnings: 0
+
+mysql> select * from students;
++-----+-----------+------+-----------+-------+
+| sno | sname     | sex  | sbirthday | class |
++-----+-----------+------+-----------+-------+
+|   6 | 李明      | 男   |      2005 |     1 |
+|   7 | 张一      | 男   |      2004 |     2 |
+|   9 | 刘欢      | 男   |      2006 |     2 |
+|  11 | 王丽      | 女   |      2003 |     3 |
+|  13 | 徐起      | 男   |      2007 |     3 |
+|  17 | 杨桦      | 女   |      2005 |     4 |
+|  19 | 徐明      | 男   |      2006 |     6 |
+|  23 | 王齐      | 男   |      2004 |     5 |
+|  45 | 严嫣      | 女   |      2006 |     2 |
+|  78 | 赵丽颖    | 女   |      2005 |     4 |
+|  80 | 陈松      | 男   |      2005 |     6 |
+|  90 | 何馨      | 女   |      2006 |     5 |
++-----+-----------+------+-----------+-------+
+12 rows in set (0.00 sec)
+
+mysql> INSERT courses VALUES
+    -> (1,'语文',1),
+    -> (2,'数学',2),
+    -> (3,'英语',3),
+    -> (4,'历史',4),
+    -> (5,'地理',5),
+    -> (6,'生物',6),
+    -> (7,'化学',7),
+    -> (8,'物理',8),
+    -> (9,'政治',9),
+    -> (10,'体育',10);
+Query OK, 10 rows affected (0.00 sec)
+Records: 10  Duplicates: 0  Warnings: 0
+
+mysql> select * from courses
+    -> ;
++-----+--------+------+
+| cno | cname  | tno  |
++-----+--------+------+
+|   1 | 语文   |    1 |
+|   2 | 数学   |    2 |
+|   3 | 英语   |    3 |
+|   4 | 历史   |    4 |
+|   5 | 地理   |    5 |
+|   6 | 生物   |    6 |
+|   7 | 化学   |    7 |
+|   8 | 物理   |    8 |
+|   9 | 政治   |    9 |
+|  10 | 体育   |   10 |
++-----+--------+------+
+10 rows in set (0.00 sec)
+
+mysql> INSERT score VALUES
+    -> (6,1,95),
+    -> (6,2,88),
+    -> (13,2,92),
+    -> (45,5,78),
+    -> (78,8,85),
+    -> (90,9,92),
+    -> (23,10,85),
+    -> (19,3,87),
+    -> (80,8,88),
+    -> (17,4,89),
+    -> (7,5,94),
+    -> (9,7,97),
+    -> (11,6,75),
+    -> (13,8,90),
+    -> (45,9,94),
+    -> (78,4,84),
+    -> (19,8,58),
+    -> (80,10,89),
+    -> (17,4,47),
+    -> (23,3,32);
+Query OK, 20 rows affected (0.00 sec)
+Records: 20  Duplicates: 0  Warnings: 0
+
+mysql> select * from score
+    -> ;
++------+------+--------+
+| sno  | cno  | degree |
++------+------+--------+
+|    6 | 1    |     95 |
+|    6 | 2    |     88 |
+|   13 | 2    |     92 |
+|   45 | 5    |     78 |
+|   78 | 8    |     85 |
+|   90 | 9    |     92 |
+|   23 | 10   |     85 |
+|   19 | 3    |     87 |
+|   80 | 8    |     88 |
+|   17 | 4    |     89 |
+|    7 | 5    |     94 |
+|    9 | 7    |     97 |
+|   11 | 6    |     75 |
+|   13 | 8    |     90 |
+|   45 | 9    |     94 |
+|   78 | 4    |     84 |
+|   19 | 8    |     58 |
+|   80 | 10   |     89 |
+|   17 | 4    |     47 |
+|   23 | 3    |     32 |
++------+------+--------+
+20 rows in set (0.00 sec)
+
+mysql> ALTER TABLE teachers MODIFY depart VARCHAR(30);
+Query OK, 0 rows affected (0.01 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> INSERT teachers VALUES
+    -> (12,'王军','男',1985,'教师','教学部'),
+    -> (22,'李琴','女',1982,'教师','教学部'),
+    -> (42,'陈球','男',1984,'教师','教学部'),
+    -> (23,'张蓉','女',1975,'主任','教学部'),
+    -> (56,'郭芳','女',1965,'部长','教务部'),
+    -> (78,'刘萍','女',1989,'教师','教学部'),
+    -> (26,'秦进','男',1993,'助教','教学部'),
+    -> (89,'王凯','男',1983,'主任','教务部'),
+    -> (34,'赵建','男',1987,'教师','教学部'),
+    -> (19,'陈明','男',1981,'助教','教学部');
+Query OK, 10 rows affected (0.00 sec)
+Records: 10  Duplicates: 0  Warnings: 0
+
+mysql> select * from teachers
+    -> ;
++-----+--------+------+-----------+--------+-----------+
+| tno | tname  | tsex | tbirthday | title  | depart    |
++-----+--------+------+-----------+--------+-----------+
+|  12 | 王军   | 男   |      1985 | 教师   | 教学部    |
+|  19 | 陈明   | 男   |      1981 | 助教   | 教学部    |
+|  22 | 李琴   | 女   |      1982 | 教师   | 教学部    |
+|  23 | 张蓉   | 女   |      1975 | 主任   | 教学部    |
+|  26 | 秦进   | 男   |      1993 | 助教   | 教学部    |
+|  34 | 赵建   | 男   |      1987 | 教师   | 教学部    |
+|  42 | 陈球   | 男   |      1984 | 教师   | 教学部    |
+|  56 | 郭芳   | 女   |      1965 | 部长   | 教务部    |
+|  78 | 刘萍   | 女   |      1989 | 教师   | 教学部    |
+|  89 | 王凯   | 男   |      1983 | 主任   | 教务部    |
++-----+--------+------+-----------+--------+-----------+
+10 rows in set (0.00 sec)
+
+mysql> SELECT sname,sex,class FROM students;
++-----------+------+-------+
+| sname     | sex  | class |
++-----------+------+-------+
+| 李明      | 男   |     1 |
+| 张一      | 男   |     2 |
+| 刘欢      | 男   |     2 |
+| 王丽      | 女   |     3 |
+| 徐起      | 男   |     3 |
+| 杨桦      | 女   |     4 |
+| 徐明      | 男   |     6 |
+| 王齐      | 男   |     5 |
+| 严嫣      | 女   |     2 |
+| 赵丽颖    | 女   |     4 |
+| 陈松      | 男   |     6 |
+| 何馨      | 女   |     5 |
++-----------+------+-------+
+12 rows in set (0.00 sec)
+
+mysql> SELECT distinct depart FROM teachers;
++-----------+
+| depart    |
++-----------+
+| 教学部    |
+| 教务部    |
++-----------+
+2 rows in set (0.01 sec)
+
+mysql> SELECT * FROM students;
++-----+-----------+------+-----------+-------+
+| sno | sname     | sex  | sbirthday | class |
++-----+-----------+------+-----------+-------+
+|   6 | 李明      | 男   |      2005 |     1 |
+|   7 | 张一      | 男   |      2004 |     2 |
+|   9 | 刘欢      | 男   |      2006 |     2 |
+|  11 | 王丽      | 女   |      2003 |     3 |
+|  13 | 徐起      | 男   |      2007 |     3 |
+|  17 | 杨桦      | 女   |      2005 |     4 |
+|  19 | 徐明      | 男   |      2006 |     6 |
+|  23 | 王齐      | 男   |      2004 |     5 |
+|  45 | 严嫣      | 女   |      2006 |     2 |
+|  78 | 赵丽颖    | 女   |      2005 |     4 |
+|  80 | 陈松      | 男   |      2005 |     6 |
+|  90 | 何馨      | 女   |      2006 |     5 |
++-----+-----------+------+-----------+-------+
+12 rows in set (0.00 sec)
+
+mysql> SELECT * FROM score WHERE degree BETWEEN 60 AND 80;
++------+------+--------+
+| sno  | cno  | degree |
++------+------+--------+
+|   45 | 5    |     78 |
+|   11 | 6    |     75 |
++------+------+--------+
+2 rows in set (0.00 sec)
+
+mysql> SELECT * FROM score WHERE degree IN (85,86,88);
++------+------+--------+
+| sno  | cno  | degree |
++------+------+--------+
+|    6 | 2    |     88 |
+|   78 | 8    |     85 |
+|   23 | 10   |     85 |
+|   80 | 8    |     88 |
++------+------+--------+
+4 rows in set (0.00 sec)
+
+mysql> SELECT * FROM students WHERE class = 5 OR sex = '女';
++-----+-----------+------+-----------+-------+
+| sno | sname     | sex  | sbirthday | class |
++-----+-----------+------+-----------+-------+
+|  11 | 王丽      | 女   |      2003 |     3 |
+|  17 | 杨桦      | 女   |      2005 |     4 |
+|  23 | 王齐      | 男   |      2004 |     5 |
+|  45 | 严嫣      | 女   |      2006 |     2 |
+|  78 | 赵丽颖    | 女   |      2005 |     4 |
+|  90 | 何馨      | 女   |      2006 |     5 |
++-----+-----------+------+-----------+-------+
+6 rows in set (0.00 sec)
+
+mysql> SELECT * FROM students ORDER BY class DESC;
++-----+-----------+------+-----------+-------+
+| sno | sname     | sex  | sbirthday | class |
++-----+-----------+------+-----------+-------+
+|  19 | 徐明      | 男   |      2006 |     6 |
+|  80 | 陈松      | 男   |      2005 |     6 |
+|  23 | 王齐      | 男   |      2004 |     5 |
+|  90 | 何馨      | 女   |      2006 |     5 |
+|  17 | 杨桦      | 女   |      2005 |     4 |
+|  78 | 赵丽颖    | 女   |      2005 |     4 |
+|  11 | 王丽      | 女   |      2003 |     3 |
+|  13 | 徐起      | 男   |      2007 |     3 |
+|   7 | 张一      | 男   |      2004 |     2 |
+|   9 | 刘欢      | 男   |      2006 |     2 |
+|  45 | 严嫣      | 女   |      2006 |     2 |
+|   6 | 李明      | 男   |      2005 |     1 |
++-----+-----------+------+-----------+-------+
+12 rows in set (0.00 sec)
+
+mysql> SELECT * FROM score ORDER BY cno,degree DESC;
++------+------+--------+
+| sno  | cno  | degree |
++------+------+--------+
+|    6 | 1    |     95 |
+|   80 | 10   |     89 |
+|   23 | 10   |     85 |
+|   13 | 2    |     92 |
+|    6 | 2    |     88 |
+|   19 | 3    |     87 |
+|   23 | 3    |     32 |
+|   17 | 4    |     89 |
+|   78 | 4    |     84 |
+|   17 | 4    |     47 |
+|    7 | 5    |     94 |
+|   45 | 5    |     78 |
+|   11 | 6    |     75 |
+|    9 | 7    |     97 |
+|   13 | 8    |     90 |
+|   80 | 8    |     88 |
+|   78 | 8    |     85 |
+|   19 | 8    |     58 |
+|   45 | 9    |     94 |
+|   90 | 9    |     92 |
++------+------+--------+
+20 rows in set (0.00 sec)
+
+mysql> SELECT COUNT(*) FROM students WHERE class = 1;
++----------+
+| COUNT(*) |
++----------+
+|        1 |
++----------+
+1 row in set (0.00 sec)
+
+mysql> SELECT sno,cno FROM score WHERE degree = (SELECT MAX(degree) FROM score);
++------+------+
+| sno  | cno  |
++------+------+
+|    9 | 7    |
++------+------+
+1 row in set (0.00 sec)
+
+mysql> SELECT AVG(degree) FROM score WHERE cno BETWEEN 3 AND 105;
++-------------+
+| AVG(degree) |
++-------------+
+|     80.2353 |
++-------------+
+1 row in set (0.00 sec)
+
+mysql> SELECT cno,AVG(degree) FROM score WHERE cno like '3%' group by cno having COUNT(*)>2;
+Empty set (0.00 sec)
+
+mysql> SELECT sname, cno , degree FROM students,score WHERE students.sno = score.sno;
++-----------+------+--------+
+| sname     | cno  | degree |
++-----------+------+--------+
+| 李明      | 1    |     95 |
+| 李明      | 2    |     88 |
+| 徐起      | 2    |     92 |
+| 严嫣      | 5    |     78 |
+| 赵丽颖    | 8    |     85 |
+| 何馨      | 9    |     92 |
+| 王齐      | 10   |     85 |
+| 徐明      | 3    |     87 |
+| 陈松      | 8    |     88 |
+| 杨桦      | 4    |     89 |
+| 张一      | 5    |     94 |
+| 刘欢      | 7    |     97 |
+| 王丽      | 6    |     75 |
+| 徐起      | 8    |     90 |
+| 严嫣      | 9    |     94 |
+| 赵丽颖    | 4    |     84 |
+| 徐明      | 8    |     58 |
+| 陈松      | 10   |     89 |
+| 杨桦      | 4    |     47 |
+| 王齐      | 3    |     32 |
++-----------+------+--------+
+20 rows in set (0.00 sec)
+
+mysql> SELECT AVG(degree) FROM score , students WHERE score.sno = students.sno AND students.class = 3;
++-------------+
+| AVG(degree) |
++-------------+
+|     85.6667 |
++-------------+
+1 row in set (0.00 sec)
+
+mysql> SELECT AVG(score.degree) FROM score JOIN students ON score.sno = students.sno WHERE students.class = 3;
++-------------------+
+| AVG(score.degree) |
++-------------------+
+|           85.6667 |
++-------------------+
+1 row in set (0.00 sec)
+
+mysql> select * from grade
+    -> ;
++------+------+------+
+| low  | upp  | rank |
++------+------+------+
+|   90 |  100 | A    |
+|   80 |   89 | B    |
+|   70 |   79 | C    |
+|   60 |   69 | D    |
+|    0 |   59 | E    |
++------+------+------+
+5 rows in set (0.00 sec)
+
+
+mysql> UPDATE courses SET tno=12 WHERE cno=1;
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> UPDATE courses SET tno=22 WHERE cno=2;
+Query OK, 1 row affected (0.00 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> UPDATE courses SET tno=42 WHERE cno=3;
+Query OK, 1 row affected (0.00 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> UPDATE courses SET tno=78 WHERE cno=4;
+Query OK, 1 row affected (0.00 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> UPDATE courses SET tno=19 WHERE cno=5;
+Query OK, 1 row affected (0.00 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> UPDATE courses SET tno=34 WHERE cno=6;
+Query OK, 1 row affected (0.00 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> UPDATE courses SET tno=89 WHERE cno=7;
+Query OK, 1 row affected (0.00 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> UPDATE courses SET tno=56 WHERE cno=8;
+Query OK, 1 row affected (0.00 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> UPDATE courses SET tno=23 WHERE cno=9;
+Query OK, 1 row affected (0.00 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> UPDATE courses SET tno=34 WHERE cno=10;
+Query OK, 1 row affected (0.00 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select * from courses
+    -> ;
++-----+--------+------+
+| cno | cname  | tno  |
++-----+--------+------+
+|   1 | 语文   |   12 |
+|   2 | 数学   |   22 |
+|   3 | 英语   |   42 |
+|   4 | 历史   |   78 |
+|   5 | 地理   |   19 |
+|   6 | 生物   |   34 |
+|   7 | 化学   |   89 |
+|   8 | 物理   |   56 |
+|   9 | 政治   |   23 |
+|  10 | 体育   |   34 |
++-----+--------+------+
+10 rows in set (0.00 sec)
+
+mysql> SELECT degree from score,teachers,courses
+    -> WHERE tname like '赵建'
+    -> and score.cno = courses.cno
+    -> and courses.tno = teachers.tno;
++--------+
+| degree |
++--------+
+|     85 |
+|     75 |
+|     89 |
++--------+
+3 rows in set (0.00 sec)
+
+mysql> SELECT tname FROM courses,score,teachers
+    -> WHERE courses.tno = teachers.tno
+    -> and score.cno = courses.cno
+    -> GROUP By tname
+    -> HAVING COUNT(*)>2;
++--------+
+| tname  |
++--------+
+| 刘萍   |
+| 赵建   |
+| 郭芳   |
++--------+
+3 rows in set (0.00 sec)
+
+mysql> SELECT tname,tsex,tbirthday FROM teachers
+    -> UNION
+    -> SELECT sname,sex,sbirthday FROM students;
++-----------+------+-----------+
+| tname     | tsex | tbirthday |
++-----------+------+-----------+
+| 王军      | 男   |      1985 |
+| 陈明      | 男   |      1981 |
+| 李琴      | 女   |      1982 |
+| 张蓉      | 女   |      1975 |
+| 秦进      | 男   |      1993 |
+| 赵建      | 男   |      1987 |
+| 陈球      | 男   |      1984 |
+| 郭芳      | 女   |      1965 |
+| 刘萍      | 女   |      1989 |
+| 王凯      | 男   |      1983 |
+| 李明      | 男   |      2005 |
+| 张一      | 男   |      2004 |
+| 刘欢      | 男   |      2006 |
+| 王丽      | 女   |      2003 |
+| 徐起      | 男   |      2007 |
+| 杨桦      | 女   |      2005 |
+| 徐明      | 男   |      2006 |
+| 王齐      | 男   |      2004 |
+| 严嫣      | 女   |      2006 |
+| 赵丽颖    | 女   |      2005 |
+| 陈松      | 男   |      2005 |
+| 何馨      | 女   |      2006 |
++-----------+------+-----------+
+22 rows in set (0.00 sec)
+
+mysql> SELECT tname,tsex,tbirthday FROM teachers
+    -> UNION ALL
+    -> SELECT sname,sex,sbirthday FROM students;
++-----------+------+-----------+
+| tname     | tsex | tbirthday |
++-----------+------+-----------+
+| 王军      | 男   |      1985 |
+| 陈明      | 男   |      1981 |
+| 李琴      | 女   |      1982 |
+| 张蓉      | 女   |      1975 |
+| 秦进      | 男   |      1993 |
+| 赵建      | 男   |      1987 |
+| 陈球      | 男   |      1984 |
+| 郭芳      | 女   |      1965 |
+| 刘萍      | 女   |      1989 |
+| 王凯      | 男   |      1983 |
+| 李明      | 男   |      2005 |
+| 张一      | 男   |      2004 |
+| 刘欢      | 男   |      2006 |
+| 王丽      | 女   |      2003 |
+| 徐起      | 男   |      2007 |
+| 杨桦      | 女   |      2005 |
+| 徐明      | 男   |      2006 |
+| 王齐      | 男   |      2004 |
+| 严嫣      | 女   |      2006 |
+| 赵丽颖    | 女   |      2005 |
+| 陈松      | 男   |      2005 |
+| 何馨      | 女   |      2006 |
++-----------+------+-----------+
+22 rows in set (0.00 sec)
+
+mysql> SELECT distinct tname,depart FROM teachers,courses
+    -> WHERE teachers.tno NOT IN (SELECT tno from courses);
++--------+-----------+
+| tname  | depart    |
++--------+-----------+
+| 秦进   | 教学部    |
++--------+-----------+
+1 row in set (0.00 sec)
+
+mysql> SELECT class FROM students
+    -> WHERE sex like '男'
+    -> GROUP BY class
+    -> HAVING COUNT(sex)>1;
++-------+
+| class |
++-------+
+|     2 |
+|     6 |
++-------+
+2 rows in set (0.00 sec)
+
+
+mysql> SELECT * FROM students
+    -> WHERE sname NOT LIKE '王%';
++-----+-----------+------+-----------+-------+
+| sno | sname     | sex  | sbirthday | class |
++-----+-----------+------+-----------+-------+
+|   6 | 李明      | 男   |      2005 |     1 |
+|   7 | 张一      | 男   |      2004 |     2 |
+|   9 | 刘欢      | 男   |      2006 |     2 |
+|  13 | 徐起      | 男   |      2007 |     3 |
+|  17 | 杨桦      | 女   |      2005 |     4 |
+|  19 | 徐明      | 男   |      2006 |     6 |
+|  45 | 严嫣      | 女   |      2006 |     2 |
+|  78 | 赵丽颖    | 女   |      2005 |     4 |
+|  80 | 陈松      | 男   |      2005 |     6 |
+|  90 | 何馨      | 女   |      2006 |     5 |
++-----+-----------+------+-----------+-------+
+10 rows in set (0.00 sec)
+
+
+mysql> SELECT degree FROM students,courses,score
+    -> WHERE courses.cname LIKE '语文'
+    -> and students.sex = '男'
+    -> AND students.sno = score.sno
+    -> AND courses.cno = score.cno;
++--------+
+| degree |
++--------+
+|     95 |
++--------+
+1 row in set (0.00 sec)

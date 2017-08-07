@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<link rel="stylesheet" type="text/css" href="../static/styles.css">
+		<link rel="stylesheet" type="text/css" href="http://apps.bdimg.com/libs/jqueryui/1.10.4/css/jquery-ui.min.css">
+		<meta charset="utf-8">
+		<script src="http://apps.bdimg.com/libs/jquery/1.10.2/jquery.min.js"></script>
+		<script src="http://apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+		<script>
+			//这在jquery中是文档载入完毕就执行的意思
+			$(function() {
+				var availableQuries = [];
+				var autoQuries = [];
+				word = $("#input").val();
+				//这个方法监听并实时获取输入框的值
+				$('#input').bind('input propertychange',function(){
+					$('#result').html($(this).val()+'共'+$(this).val().length + ' characters');
+					$.get('/search/', {'word':word}, function(data){
+						queries = $.parseJSON(data);
+						$.each(queries,function(key,value){
+							availableQuries.push(value.fields.title);
+						});
+					})
+
+				});
+				$("#input").autocomplete({//autocomplete从这里获得数据源
+					source: availableQuries
+				});
+			});
+		</script>
+		<title></title>
+	</head>
+
+	<body>
+		<div id="s_form">
+			<div id="s_form_wrapper">
+				<div id="logo">
+					<img id="s_lg_img" src="../static/baidu_logo.png" width="270" height="129">
+				</div>
+				<form name="f" id="form">
+					<input type="text" id="input" maxlength="100" autocomplete="off">
+					<input type="submit" value="百度一下">
+					<div id="result"></div>
+				</form>
+			</div>
+		</div>
+
+		
+		
+	</body>
+
+</html>

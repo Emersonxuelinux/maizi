@@ -1,0 +1,40 @@
+#s_form{
+	width:100%;
+	height: 100%;
+	min-height: 293px;
+	margin: 0 auto 0auto;
+	text-align:center;
+}
+#s_form_wrapper{
+	height: 100%;
+	position: relative;
+	width:1000px;
+	margin:0 auto;
+	text-align: center;
+	}
+	
+#logo{
+	height:61.8%;
+	min-height: 150px;
+	position:relative;
+	z-index:0;
+	text-align:center;
+	
+}
+
+#form{
+
+}
+#input{
+	height:40px;
+	width:536px;
+}
+.su{
+	-webkit-appearance:button;
+	height:38px;
+	width:102px;
+}
+input[type=submit]{
+	height:38px;
+	width: 102px;
+}

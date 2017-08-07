@@ -1,0 +1,11 @@
+创建Virtualenv虚拟环境,并在虚拟环境里安装几个第三方库,安装卸载.请详细写出步骤:
+说明：由于我用的是osx系统，所以这里以此为基础安装maizi_env进行说明，主要列出指令：
+$ pip install virtualenv
+$ virtualenv maizi_env
+$ which python3 #有时候需要切换python3版本，所以换一下
+$ virtualenv ar_env -p *python3路径*
+$ source maizi_env/bin/activate
+$ sudo pip3 install django==1.9.5
+$ sudo pip uninstall Django
+$ deactivate
+
